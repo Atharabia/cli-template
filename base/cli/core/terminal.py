@@ -3,7 +3,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 
 
-class Logger:
+class Terminal:
     def __init__(self, quiet: bool) -> None:
         self.quiet = quiet
 

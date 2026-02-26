@@ -1,6 +1,6 @@
-from .logger import Logger
+from .terminal import Terminal
 
 
 __all__ = [
-    "Logger",
+    "Terminal",
 ]
