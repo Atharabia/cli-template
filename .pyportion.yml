@@ -1,11 +1,9 @@
 name: cli-template
+source: https://github.com/pyportion/cli-template
 version: 1.0.0
 description: A CLI Template.
 author: PyPortion Team
 type: cli
-source:
-    link: https://github.com/pyportion/cli-template
-    tag: main
 
 portions:
     - name: command
