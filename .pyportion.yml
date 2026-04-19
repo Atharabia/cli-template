@@ -31,7 +31,7 @@ setup:
             mode: pascalcase
 
     - type: replace
-      path: ["pyproject.toml"]
+      path: ["$project_name", "pyproject.toml"]
       replacements:
           - keyword: project-description
             value: $project_description
