@@ -85,7 +85,6 @@ portions:
           path: ["cli", "commands", "__init__.py"]
           list_name: "__all__"
           value: "$command_class"
-          as_identifier: true
 
         - type: copy
           from_path: ["handler.py"]
@@ -94,7 +93,7 @@ portions:
         - type: replace
           path: ["cli", "handlers", "$command_name.py"]
           replacements:
-              - keyword: HANDLER_CLASS_NAME
+              - keyword: COMMAND_CLASS_NAME
                 value: $command_name
                 mode: pascalcase
 
@@ -114,11 +113,11 @@ portions:
 
         - type: add_import
           path: ["cli", "handlers", "__init__.py"]
-          import_statement: "from .$command_name import $command_class"
+          import_statement: "from .$command_name import $command_classHandler"
 
         - type: add_to_list
           path: ["cli", "handlers", "__init__.py"]
-          list_name: "__all__"
+          list_name: "handlers"
           value: "$command_class"
           as_identifier: true
 
@@ -129,16 +128,20 @@ portions:
           variable: model_name
 
         - type: set_var
+          key: model_filename
+          mode: pascalcase
+
+        - type: set_var
           key: model_class
           value: $model_name
           mode: pascalcase
 
         - type: copy
           from_path: ["model.py"]
-          to_path: ["cli", "models", "$model_name.py"]
+          to_path: ["cli", "models", "$model_filename.py"]
 
         - type: replace
-          path: ["cli", "models", "$model_name.py"]
+          path: ["cli", "models", "$model_filename.py"]
           replacements:
               - keyword: MODEL_CLASS_NAME
                 value: $model_name

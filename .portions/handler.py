@@ -1,10 +1,10 @@
 import typer
 
 from cli.base.handler import HandlerBase
-from cli.commands.COMMAND_NAME import COMMAND_CLASS_NAME
+from cli.commands import COMMAND_CLASS_NAME
 
 
-class HANDLER_CLASS_NAME(HandlerBase):
+class HANDLER_CLASS_NAMEHandler(HandlerBase):
     def __init__(self, app: typer.Typer) -> None:
         super().__init__(app)
 
