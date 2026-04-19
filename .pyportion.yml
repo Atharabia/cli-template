@@ -37,7 +37,7 @@ setup:
             value: $project_description
 
     - type: replace
-      path: ["README.md"]
+      path: ["$project_name", "README.md"]
       replacements:
           - keyword: project_name
             value: $project_name
