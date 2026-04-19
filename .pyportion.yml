@@ -129,6 +129,7 @@ portions:
 
         - type: set_var
           key: model_filename
+          value: $model_name
           mode: pascalcase
 
         - type: set_var
