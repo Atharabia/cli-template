@@ -24,7 +24,7 @@ setup:
       variable: git_output
 
     - type: replace
-      path: ["pyproject.toml"]
+      path: ["$project_name", "pyproject.toml"]
       replacements:
           - keyword: project-name
             value: $project_name
