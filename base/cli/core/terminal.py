@@ -1,16 +1,67 @@
-import logging
+from __future__ import annotations
 
-logging.basicConfig(level=logging.INFO, format="%(message)s")
+import questionary
+from rich.console import Console
+from rich.jupyter import JupyterMixin
+from rich.prompt import Confirm
+from rich.theme import Theme
+
+from cli.models import Config
 
 
 class Terminal:
-    def __init__(self, quiet: bool) -> None:
-        self.quiet = quiet
+    def __new__(cls) -> Terminal:
+        if not hasattr(cls, "_instance"):
+            cls._instance = super(cls, Terminal).__new__(cls)
+        return cls._instance
 
-    def error(self, message: str) -> None:
-        if not self.quiet:
-            logging.info("Error: " + message)
+    def __init__(self) -> None:
+        theme = Theme({
+            "info": "green",
+            "warn": "yellow",
+            "error": "red",
+        })
 
-    def info(self, message: str) -> None:
-        if not self.quiet:
-            logging.info(message)
+        self.console = Console(theme=theme)
+
+    def pulse(self, message: str, **kwargs: str) -> None:
+        if Config.verbose:
+            self.console.log(message.format(**kwargs))
+
+    def warn(self, message: str, **kwargs: str) -> None:
+        message = message.format(**kwargs)
+        self.console.print(f"[warn]{message}[/warn]")
+
+    def error(self, message: str, **kwargs: str) -> None:
+        message = message.format(**kwargs)
+        self.console.print(f"[error]{message}[/error]")
+
+    def info(self, message: str, **kwargs: str) -> None:
+        message = message.format(**kwargs)
+        self.console.print(f"[info]{message}[/info]")
+
+    def prompt(self, message: str, **kwargs: str) -> bool:
+        message = message.format(**kwargs)
+        if Config.auto_confirm or Confirm.ask(message):
+            return True
+        return False
+
+    def choose(self, message: str, choices: list[str], **kwargs: str) -> str:
+        select_style = questionary.Style([
+            ("question", "bold #47ba47"),
+            ("qmark", "#47ba47"),
+            ("pointer", "#47ba47"),
+            ("highlighted", "#47ba47"),
+            ("answer", "bold #47ba47"),
+        ])
+
+        message = message.format(**kwargs)
+        choice = questionary.select(message,
+                                    choices=choices,
+                                    qmark="●",
+                                    pointer=">",
+                                    style=select_style).ask()
+        return choice
+
+    def print(self, message: JupyterMixin) -> None:
+        self.console.print(message)

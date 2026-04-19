@@ -1,16 +1,17 @@
 import typer
 
-from cli.base import HandlerBase
-from cli.commands import COMMAND_CLASS_NAME
+from cli.base.handler import HandlerBase
+from cli.commands.COMMAND_NAME import COMMAND_CLASS_NAME
 
 
-class COMMAND_HANDLER_NAME(HandlerBase):
+class HANDLER_CLASS_NAME(HandlerBase):
     def __init__(self, app: typer.Typer) -> None:
         super().__init__(app)
 
     def register_commands(self) -> None:
-        COMMAND_VAR_NAME = COMMAND_CLASS_NAME()
-
-        @self.command.command()
-        def COMMAND_FUNCTION_NAME() -> None:
-            COMMAND_VAR_NAME.add()
+        @self.command.command(
+            name="HANDLER_FUNCTION_NAME",
+            help="HANDLER_FUNCTION_HELP",
+        )
+        def HANDLER_FUNCTION_NAME() -> None:
+            COMMAND_CLASS_NAME().HANDLER_FUNCTION_NAME()

@@ -1,8 +1,6 @@
-from typing import Dict
-
-from cli.core import Terminal
+from cli.core.terminal import Terminal
 
 
 class CommandBase:
-    def __init__(self, **kwargs: Dict[str, str]) -> None:
-        self.logger = Terminal(quiet=False)
+    def __init__(self) -> None:
+        self.terminal = Terminal()

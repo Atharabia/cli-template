@@ -1,79 +1,141 @@
 name: cli-template
 source: https://github.com/pyportion/cli-template
-version: 1.0.1
-description: A CLI Template.
+version: 1.1.0
+description: A CLI Template for building Python CLI applications with Typer.
 author: PyPortion Team
 type: cli
 
+setup:
+    - type: ask
+      question: What is the project name?
+      variable: project_name
+
+    - type: ask
+      question: What is the project description?
+      variable: project_description
+
+    - type: set_var
+      key: project_name
+      value: $project_name
+      mode: pascalcase
+
+    - type: bash
+      command: git init
+      variable: git_output
+
+    - type: replace
+      path: ["pyproject.toml"]
+      replacements:
+          - keyword: project-name
+            value: $project_name
+            mode: pascalcase
+
+    - type: replace
+      path: ["pyproject.toml"]
+      replacements:
+          - keyword: project-description
+            value: $project_description
+
+    - type: replace
+      path: ["README.md"]
+      replacements:
+          - keyword: project_name
+            value: $project_name
+            mode: pascalcase
+
 portions:
-    - name: command
-      steps:
-          - type: ask
-            question: What is the command name?
-            variable: command_name
+  - name: command
+    steps:
+        - type: ask
+          question: What is the command name?
+          variable: command_name
 
-          - type: copy
-            from_path: ["handler.py"]
-            to_path: ["cli", "handler", "$command_name.py"]
+        - type: ask
+          question: What is the command help?
+          variable: command_help
+ 
+        - type: set_var
+          key: command_class
+          value: $command_name
+          mode: pascalcase
+        
+        - type: copy
+          from_path: ["command.py"]
+          to_path: ["cli", "commands", "$command_name.py"]
 
-          - type: replace
-            path: ["cli", "handler", "$command_name.py"]
-            replacements:
-                - keyword: COMMAND_CLASS_NAME
-                  value: $command_name
-                  mode: pascalcase
+        - type: replace
+          path: ["cli", "commands", "$command_name.py"]
+          replacements:
+              - keyword: COMMAND_CLASS_NAME
+                value: $command_name
+                mode: pascalcase
 
-                - keyword: COMMAND_HANDLER_NAME
-                  value: $command_name
-                  mode: pascalcase
+        - type: replace
+          path: ["cli", "commands", "$command_name.py"]
+          replacements:
+              - keyword: COMMAND_FUNCTION_NAME
+                value: $command_name
+                mode: camelcase
 
-                - keyword: COMMAND_VAR_NAME
-                  value: $command_name
-                  mode: camelcase
+        - type: add_import
+          path: ["cli", "commands", "__init__.py"]
+          import_statement: "from .$command_name import $command_class"
 
-                - keyword: COMMAND_FUNCTION_NAME
-                  value: $command_name
-                  mode: camelcase
+        - type: add_to_list
+          path: ["cli", "commands", "__init__.py"]
+          list_name: "__all__"
+          value: "$command_class"
+          as_identifier: true
 
-          - type: copy
-            from_path: ["command.py"]
-            to_path: ["cli", "commands", "$command_name.py"]
+        - type: copy
+          from_path: ["handler.py"]
+          to_path: ["cli", "handlers", "$command_name.py"]
 
-          - type: replace
-            path: ["cli", "commands", "$command_name.py"]
-            replacements:
-                - keyword: COMMAND_CLASS_NAME
-                  value: $command_name
-                  mode: pascalcase
+        - type: replace
+          path: ["cli", "handlers", "$command_name.py"]
+          replacements:
+              - keyword: HANDLER_CLASS_NAME
+                value: $command_name
+                mode: pascalcase
 
-                - keyword: COMMAND_NAME_FUNTION
-                  value: $command_name
-                  mode: camelcase
+        - type: replace
+          path: ["cli", "handlers", "$command_name.py"]
+          replacements:
+              - keyword: HANDLER_FUNCTION_NAME
+                value: $command_name
+                mode: camelcase
 
-          - type: set_var
-            key: command_class
-            value: $command_name
-            mode: titlecase
+        - type: replace
+          path: ["cli", "handlers", "$command_name.py"]
+          replacements:
+              - keyword: HANDLER_FUNCTION_HELP
+                value: $command_help
+                mode: camelcase
 
-          - type: add_import
-            path: ["cli", "commands", "__init__.py"]
-            import_statement: "from .$command_name import $command_class"
-          
-          - type: add_to_list
-            path: ["cli", "commands", "__init__.py"]
-            list_name: "__all__"
-            value: "$command_class"
+        - type: add_import
+          path: ["cli", "handlers", "__init__.py"]
+          import_statement: "from .$command_name import $command_class"
 
-    - name: model
-      steps:
+        - type: add_to_list
+          path: ["cli", "handlers", "__init__.py"]
+          list_name: "__all__"
+          value: "$command_class"
+          as_identifier: true
+
+  - name: model
+    steps:
         - type: ask
           question: What is the model name?
           variable: model_name
-        
+
+        - type: set_var
+          key: model_class
+          value: $model_name
+          mode: pascalcase
+
         - type: copy
           from_path: ["model.py"]
           to_path: ["cli", "models", "$model_name.py"]
-
 
         - type: replace
           path: ["cli", "models", "$model_name.py"]
@@ -81,17 +143,3 @@ portions:
               - keyword: MODEL_CLASS_NAME
                 value: $model_name
                 mode: pascalcase
-
-        - type: set_var
-          key: model_class
-          value: $model_name
-          mode: titlecase
-
-        - type: add_import
-          path: ["cli", "models", "__init__.py"]
-          import_statement: "from .$model_name import $model_class"
-        
-        - type: add_to_list
-          path: ["cli", "models", "__init__.py"]
-          list_name: "__all__"
-          value: "$model_class"
